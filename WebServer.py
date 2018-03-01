@@ -1,11 +1,10 @@
 """
-Project short description...
+Multithread webServer
 
-Project long description...
+!!! PROJECT INCOMPLETE !!!
 
 Revision History:
     date: changes..
-    26 February 2018: a lot of things
 """
 from abc import abstractmethod, ABCMeta
 
@@ -75,12 +74,11 @@ class WebServer:
         self._start()
         while self._is_running and not self._closed:
             (client_socket, client_address) = self._server_socket.accept()
-            # client_process = multiprocessing.Process(target=self._httpRequestHandler.handle,
-            #                                          name=str(client_address),
-            #                                          args=(client_socket,))
-            # client_process.daemon = True
-            # client_process.start()
-            self._httpRequestHandler.handle(client_socket)
+            client_process = multiprocessing.Process(target=self._httpRequestHandler.handle,
+                                                     name=str(client_address),
+                                                     args=(client_socket,))
+            client_process.daemon = True
+            client_process.start()
             client_socket.close()
 
     def _start(self):
@@ -219,22 +217,6 @@ class ErrorGetHttpRequest(IHttpRequest):
         return http_response
 
 
-# class WebServer:
-#
-#     def _handle_request(self, client_socket: socket):
-#         print_process("handle_request", client_socket.getpeername())
-#         request = client_socket.recv(1024)
-#         http_response = self._handle_http_request(client_socket.recv(1024))
-#         client_socket.sendall(http_response)
-#         client_socket.close()
-#         print_process("handle_request", "client request satisfied")
-#
-#     def _handle_http_request(self, request: bytes) -> bytes:
-#         print("the request is: \n {}".format(request))
-#         http_response = b"HTTP/1.1 200 OK\r\n\r\n" \
-#                         b"<!DOCTYPE html><html><head><title>hello luca</title></head>" \
-#                         b"<body><h1>Hello, World!</h1></body></html>"
-#         return http_response
 def main():
     HOST, PORT = '', 8888
     serv = WebServer(HOST, PORT)
